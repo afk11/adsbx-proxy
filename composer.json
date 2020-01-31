@@ -1,0 +1,20 @@
+{
+    "name": "afk11/adsbx-proxy",
+    "type": "library",
+    "require": {
+        "react/http-client": "^0.5.0",
+        "react/http": "^0.8.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Afk11\\AdsbxProxy\\": "src/"
+        }
+    },
+    "license": "Unlicense",
+    "authors": [
+        {
+            "name": "Thomas Kerin",
+            "email": "me@thomaskerin.io"
+        }
+    ]
+}
