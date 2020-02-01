@@ -30,6 +30,7 @@ $server = new Server(isset($argv[1]) ? $argv[1] : 0, $loop, array(
 $deferred = new \React\Promise\Deferred();
 $deferred->promise()
     ->then(function (ConnectionInterface $connection) use ($loop) {
+        echo "fire initial messages\n";
         $nextState = new \React\Promise\Deferred();
         $doMessages = $loop->addPeriodicTimer(1, function () use ($connection) {
             $connection->write("MSG,3,0,0,4CA336,0,2020/02/01,12:18:23.000,2020/02/01,12:18:23.000,,8400,,,53.450317,-8.01413,,,,,,\r\n");
@@ -41,6 +42,7 @@ $deferred->promise()
         return $nextState->promise();
     })
     ->then(function (ConnectionInterface $connection) use ($loop) {
+        echo "wait 70 seconds\n";
         $nextState = new \React\Promise\Deferred();
         $loop->addTimer(70, function () use ($loop, $nextState) {
             $nextState->resolve();
@@ -48,6 +50,7 @@ $deferred->promise()
         return $nextState->promise();
     })
     ->then(function (ConnectionInterface $connection) use ($loop) {
+        echo "resume messages\n";
         $nextState = new \React\Promise\Deferred();
         $doMessages = $loop->addPeriodicTimer(1, function () use ($connection) {
             $connection->write("MSG,3,0,0,4CA336,0,2020/02/01,12:18:23.000,2020/02/01,12:18:23.000,,8400,,,53.450317,-8.01413,,,,,,\r\n");
