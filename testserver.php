@@ -44,8 +44,8 @@ $deferred->promise()
     ->then(function (ConnectionInterface $connection) use ($loop) {
         echo "wait 70 seconds\n";
         $nextState = new \React\Promise\Deferred();
-        $loop->addTimer(70, function () use ($loop, $nextState) {
-            $nextState->resolve();
+        $loop->addTimer(70, function () use ($loop, $nextState, $connection) {
+            $nextState->resolve($connection);
         });
         return $nextState->promise();
     })
@@ -71,3 +71,6 @@ $server->on('error', 'printf');
 echo 'Listening on ' . $server->getAddress() . PHP_EOL;
 
 $loop->run();
+/*
+ $ /var/lib/tracker/sbs1-tracker/artisan sbs1:run oxo  --host=localhost --port 12300 --track-squawks --track-transmission-types --track-callsigns --track-kml-whitelist=4CA13E,4CA13F,4CA023,4CA158,4CA1E7,4CA1E8,4CA1E9,4CA1EA,4CA1EB,4CA1EC,4CA1ED,4CA1EE,4CA1EF,4CA1F0,4CA204,4CA28B,4CA28C,4CA31A,4CA31E,4CA330,4CA331,4CA332,4CA335,4CA336,4CA41A,4CA98B,4CA98C,4CA98D,4CA98E,4CA98F  --debug-aircraft=4CA13E,4CA13F,4CA023,4CA158,4CA1E7,4CA1E8,4CA1E9,4CA1EA,4CA1EB,4CA1EC,4CA1ED,4CA1EE,4CA1EF,4CA1F0,4CA204,4CA28B,4CA28C,4CA31A,4CA31E,4CA330,4CA331,4CA332,4CA335,4CA336,4CA41A,4CA98B,4CA98C,4CA98D,4CA98E,4CA98F
+ */
