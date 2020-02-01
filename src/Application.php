@@ -10,16 +10,21 @@ class Application
 {
     public function run() {
         $refreshSeconds = getenv("ADSBX_CACHE_TIME") ?: 5;
+        $bindHost = getenv("ADSBX_BIND_HOST") ?: "127.0.0.1";
+        $bindPort = (int) (getenv("ADSBX_BIND_PORT") ?: 8080);
+        $apiKey = getenv("ADSBX_API_KEY");
+
         $loop = \React\EventLoop\Factory::create();
         $httpClient = new \React\HttpClient\Client($loop);
-        $apiKey = getenv("ADSBX_API_KEY");
         $adsbx = new ApiClient($httpClient, $apiKey);
+
         $cached = '';
         $loop->addPeriodicTimer($refreshSeconds, function () use ($adsbx, &$cached) {
             $adsbx->getRawData()->then(function (string $data) use (&$cached) {
                 $cached = $data;
             });
         });
+
         $server = new Server(
             function (ServerRequestInterface $request) use (&$cached) {
                 switch ($request->getUri()->getPath()) {
@@ -37,7 +42,7 @@ class Application
 
             });
 
-        $socket = new \React\Socket\Server(8080, $loop);
+        $socket = new \React\Socket\Server("$bindHost:$bindPort", $loop);
         $server->listen($socket);
         $loop->run();
     }
